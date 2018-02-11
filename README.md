@@ -1,3 +1,5 @@
+<img src="docs/images/logo_py_crop.png" align="right" border = "10" />
+
 # kmeans_py
 
 [![GitHub issues](https://img.shields.io/github/issues/UBC-MDS/kmeans_py.svg)](https://github.com/UBC-MDS/kmeans_py/issues)
