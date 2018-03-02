@@ -12,12 +12,18 @@ def test_kmeans_init():
     """
     Testing kmeans initialize_centers method
     """
+
+    data = np.array([[1, 2, 3, 4], [9, 8, 7, 6], [1.5, 2, 3.5, 4]])
     K = range(0, 10, 1)
 
     for k in K:
-        model = kmeans_py.kmeans(data = np.array([], []), K = k)
+        model = kmeans_py.kmeans(data = data, K = k)
         model.initialize_centers(algorithm = 'kmeans++')
-        assert model.initial_values != None
+        assert model.initial_values != None #should return something
+        assert type(model.initial_values) is np.ndarray # should return array
+        assert model.initial_values == unique(model.initial_values, axis=0) # check that values are unique
+
+
 
 def test_kmeans_cluster():
     """
