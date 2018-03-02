@@ -19,7 +19,7 @@ def test_kmeans_init():
         model.initialize_centers(algorithm = 'kmeans++')
         assert model.initial_values != None
 
-def test_kmeans():
+def test_kmeans_cluster():
     """
     Testing kmeans cluster_points method
     """
@@ -31,4 +31,32 @@ def test_kmeans():
     model.initial_values = cent
     model.cluster_points()
 
-    assert model.cluster_assignments != None
+    # test that the the cluster assignments are the right shape
+    assert len(model.cluster_assignments) == X.shape[0]
+    assert len(np.unique(model.cluster_assignments)) <= cent.shape[0]
+
+    # test that it correctly clustered the toy example
+    assert np.allequal(model.cluster_assignments, np.array([0,1,0]))
+
+    # test that when the initial values are missing, it throws correct error
+    bad_model = kmeans_py.kmeans(data=X, K=bad_cent.shape[0])
+    bad_model.initial_values = None
+
+    try:
+        model.cluster_points()
+    except(ValueError):
+        assert True
+    else:
+        assert False
+
+    # test when initial value and data are incomp. shape, throws correct error
+    bad_cent = np.array([[2, 3, 4]])
+    bad_model = kmeans_py.kmeans(data=X, K=bad_cent.shape[0])
+    bad_model.initial_values = bad_cent
+
+    try:
+        model.cluster_points()
+    except(ValueError):
+        assert True
+    else:
+        assert False
