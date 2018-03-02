@@ -1,5 +1,5 @@
 """User-friendly k-means clustering package"""
-
+import numpy as np
 
 class kmeans():
 
@@ -42,6 +42,15 @@ class kmeans():
         kmeans_init(data, K = 2)
 
         """
+        if self.data is None or type(self.data) is not np.ndarray:
+            raise TypeError("Data is missing or of wrong object type. Please specify data as a Numpy array.")
+
+        if self.K is None or self.K%1 != 0:
+            raise TypeError("K is missing or is not an integer. Please specify K as an integer.")
+
+        if self.data.shape[0] < self.K:
+            raise ValueError("Cannot choose more initialize values than data observations.")
+
         pass
 
     def cluster_points(self):
