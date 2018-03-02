@@ -55,6 +55,9 @@ class kmeans():
         Output:
          - an n x 1 array of hard cluster assignments
         """
+        if self.data.shape[1] != self.initial_values.shape[1]:
+            raise ValueError("Initial values and data are not compatible shape")
+
         pass
 
     def plot(self):
