@@ -58,6 +58,13 @@ def test_kmeans_init():
 def test_kmeans_cluster():
     """
     Testing kmeans cluster_points method
+
+    Tests:
+     - That the cluster assignment attribute is of correct dimension
+     - That it correctly clusters the toy example provided
+     - That it gracefully fails when initial values are missing
+     - That it gracefully fails when dimension of intial values do not match
+       those of the dataset to cluster
     """
 
     X = np.array([[1, 2, 3, 4],[9, 8 , 7, 6],[1.5, 2, 3.5, 4]])
