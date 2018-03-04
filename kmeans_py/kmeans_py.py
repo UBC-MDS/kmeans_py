@@ -71,7 +71,15 @@ class kmeans():
 
     def plot(self):
         """
-        Plot the clustered points
+        Plot the clustered points, colour by cluster assignments
+
+        Requires that self.data and self.cluster_assignments are initialized
+        Prints a plot to the screen & saves plot as an image in the root directory.
+
+        Output: image file "kmeans_plot.png" in root directory
         """
+        if self.cluster_assignments == None:
+            raise ValueError("Cluster assignments must be assigned before plotting")
+
 
         pass
