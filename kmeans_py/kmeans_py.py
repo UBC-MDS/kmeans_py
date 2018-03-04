@@ -57,6 +57,8 @@ class kmeans():
         """
         Perform k-means clustering on the provided data
 
+        Requires that kmeans.intialize_centers() has been run in advance
+
         Inputs:
          - data:    an n x d array of data points to be clustered
          - centers: a k x d array of centers (means) for intialization
