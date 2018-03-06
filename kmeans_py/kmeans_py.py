@@ -8,6 +8,7 @@ class kmeans():
         self.data = data
         self.K = K
         self.initial_values = None
+        self.cluster_centers = None
         self.cluster_assignments = None
 
 
@@ -53,23 +54,69 @@ class kmeans():
 
         pass
 
-    def cluster_points(self):
+    def cluster_points(self, max_iter=100):
         """
         Perform k-means clustering on the provided data
 
         Requires that kmeans.intialize_centers() has been run in advance
 
         Inputs:
-         - data:    an n x d array of data points to be clustered
-         - centers: a k x d array of centers (means) for intialization
+         - data:     an n x d array of data points to be clustered
+         - centers:  a k x d array of centers (means) for intialization
+         - max_iter: an integer specifying the maximum number of iterations
 
         Output:
          - an n x 1 array of hard cluster assignments
         """
-        if self.data.shape[1] != self.initial_values.shape[1]:
+        # this should be first to avoid Nonetype errors
+        if self.initial_values is None:
+            raise ValueError("Cluster centers have not been initialized")
+
+        # dimension of dataset and number of clusters
+        n, d = self.data.shape
+        k, iv_dim = self.initial_values.shape
+
+        # check that some basic conditions are met
+        if d != iv_dim:
             raise ValueError("Initial values and data are not compatible shape")
 
-        pass
+        # array to hold distance between all points and all centers
+        dist_arr = np.zeros(n*k).reshape(n,k)
+
+        # initial dummy assignment for first iteration
+        last_assign = -np.ones(n)
+        means = self.initial_values
+
+        iter_count = 0
+        while True:
+
+            # compute distance between each observation and each mean
+            for c in range(k):
+                dist_arr[:,c] = np.linalg.norm(means[c,:] - self.data, axis=1)
+
+            # assign to nearest mean
+            cur_assign = dist_arr.argmin(axis=1)
+
+            # termination block: only enter if we have hit local minima
+            if np.array_equal(cur_assign, last_assign):
+                self.cluster_assignments = cur_assign
+                self.cluster_centers = means
+                break
+
+            # update last iterations assignment for next comparison
+            last_assign = dist_arr.argmin(axis=1)
+
+            # update means based on new assignments
+            for j in range(k):
+                means[j,:] = self.data[cur_assign == j,:].mean(axis=0)
+
+            # check if we are over iteration count and increment counter
+            if iter_count > max_iter:
+                break
+            iter_count += 1
+
+        return None
+
 
     def plot(self):
         """
