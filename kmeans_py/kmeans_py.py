@@ -87,8 +87,7 @@ class kmeans():
         last_assign = -np.ones(n)
         means = self.initial_values
 
-        iter_count = 0
-        while True:
+        for iter in range(max_iter):
 
             # compute distance between each observation and each mean
             for c in range(k):
@@ -97,23 +96,18 @@ class kmeans():
             # assign to nearest mean
             cur_assign = dist_arr.argmin(axis=1)
 
-            # termination block: only enter if we have hit local minima
-            if np.array_equal(cur_assign, last_assign):
-                self.cluster_assignments = cur_assign
-                self.cluster_centers = means
-                break
-
-            # update last iterations assignment for next comparison
-            last_assign = dist_arr.argmin(axis=1)
-
             # update means based on new assignments
             for j in range(k):
                 means[j,:] = self.data[cur_assign == j,:].mean(axis=0)
 
-            # check if we are over iteration count and increment counter
-            if iter_count > max_iter:
-                break
-            iter_count += 1
+            # termination block: only enter if we have hit local minima
+            if np.array_equal(cur_assign, last_assign):
+                self.cluster_assignments = cur_assign
+                self.cluster_centers = means
+                return None
+
+            # update last iterations assignment for next comparison
+            last_assign = dist_arr.argmin(axis=1)
 
         return None
 
