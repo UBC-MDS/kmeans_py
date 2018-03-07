@@ -14,7 +14,7 @@ def test_kmeans_init():
     Testing kmeans initialize_centers method
     """
     data = np.array([[1, 2, 3, 4], [9, 8, 7, 6], [1.5, 2, 3.5, 4]])
-    K = range(0, 10, 1)
+    K = range(0, 3, 1)
 
 
     # test that no data gives error message
@@ -46,12 +46,16 @@ def test_kmeans_init():
 
     for k in K:
         model = kmeans_py.kmeans(data = data, K = k)
+        # print(model.data)
+        # print(model.K)
         model.initialize_centers(algorithm = 'kmeans++')
-        assert model.initial_values is not None #should return something
-        assert type(model.initial_values) is numpy.ndarray # should return array
-        assert model.initial_values == unique(model.initial_values, axis=0) # check that values are unique
-        assert model.initial_values.shape[0] == k # number of initial values should be the same as K
-        assert model.initial_values.shape[1] == self.data.shape[1] # dimensions should match
+        assert model.initial_values is not None  #should return something
+        assert type(model.initial_values) is np.ndarray # should return array
+        if k > 0:
+            assert np.array_equal(model.initial_values, np.unique(model.initial_values, axis=0)) # check that values are unique
+            print(model.initial_values)
+            assert model.initial_values.shape[0] == k # number of initial values should be the same as K
+            assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
 
 
 

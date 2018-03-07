@@ -12,7 +12,7 @@ class kmeans():
         self.cluster_assignments = None
 
 
-    def initialize_centers(self, algorithm = 'k-means++'):
+    def initialize_centers(self, algorithm = 'kmeans++'):
         """ Choose Initial K-Means Values
 
         Arguments
@@ -54,19 +54,20 @@ class kmeans():
 
         # return empty array if no centroids need to be returned
         if self.K == 0:
-            return np.array([])
+            self.initial_values = np.array([])
+            return None
 
         # format as Numpy array, if data object is not in this format (e.g. nested list)
         if type(self.data) != np.ndarray:
             self.data = np.array(self.data)
 
         # initialize centroids data object
-        centroids = np.array([])
+        # centroids = np.array([])
 
         # kmeans++ algorithm
-        if algorithm == "k-means++":
+        if algorithm == "kmeans++":
             # use first observation as random first centroid starting point
-            centroids[0] = self.data[0]
+            centroids = np.array([self.data[0]])
 
             # assign rest of centroids
 
@@ -91,7 +92,7 @@ class kmeans():
                     # create pdf of distances
                     prob = dist/dist_cumsum
                     # initial cdf assigning
-                    if cum_count == 1:
+                    if cum_count == 0:
                         cluster_dist_cum_probs.append(prob)
                     else:
                         cluster_dist_cum_probs.append(cluster_dist_cum_probs[-1] + prob)
