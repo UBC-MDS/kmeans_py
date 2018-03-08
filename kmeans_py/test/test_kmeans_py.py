@@ -13,9 +13,17 @@ def test_kmeans_init():
     """
     Testing kmeans initialize_centers method
     """
-    data = np.array([[1, 2, 3, 4], [9, 8, 7, 6], [1.5, 2, 3.5, 4]])
-    K = range(0, 3, 1)
+    # data = np.array([[1, 2, 3, 4], [9, 8, 7, 6], [1.5, 2, 3.5, 4]])
+    # K = range(0, 3, 1)
 
+    x = np.random.uniform(size=100) + [0, 10] * 50
+    y = np.random.normal(loc=5, scale=1, size=100) + [0, 10] * 50
+
+    data_df = np.array([x, y]).transpose()
+
+    cluster_borders = np.percentile(data_df, [0, 50, 100], axis=0)
+
+    K = range(0, 3)
 
     # test that no data gives error message
     try:
@@ -44,6 +52,15 @@ def test_kmeans_init():
     else:
         assert False
 
+    # check if valid algorithm has been chosen
+    try:
+        model = kmeans_py.kmeans(data=data, K=100)
+        model.initialize_centers(algorithm='blah')
+    except(ValueError):
+        assert True
+    else:
+        assert False
+
     for k in K:
         model = kmeans_py.kmeans(data = data, K = k)
         # print(model.data)
@@ -56,6 +73,8 @@ def test_kmeans_init():
             print(model.initial_values)
             assert model.initial_values.shape[0] == k # number of initial values should be the same as K
             assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
+
+            assert
 
 
 
