@@ -8,10 +8,11 @@ class kmeans():
         self.data = data
         self.K = K
         self.initial_values = None
+        self.cluster_centers = None
         self.cluster_assignments = None
 
 
-    def initialize_centers(self, algorithm = 'k-means++'):
+    def initialize_centers(self, algorithm = 'kmeans++'):
         """ Choose Initial K-Means Values
 
         Arguments
@@ -51,25 +52,133 @@ class kmeans():
         if self.data.shape[0] < self.K:
             raise ValueError("Cannot choose more initialize values than data observations.")
 
-        pass
+        # return empty array if no centroids need to be returned
+        if self.K == 0:
+            self.initial_values = np.array([])
+            return None
 
-    def cluster_points(self):
+        # format as Numpy array, if data object is not in this format (e.g. nested list)
+        if type(self.data) != np.ndarray:
+            self.data = np.array(self.data)
+
+        # initialize centroids data object
+        # centroids = np.array([])
+
+        # kmeans++ algorithm
+        if algorithm == "kmeans++":
+            # use first observation as random first centroid starting point
+            centroids = np.array([self.data[0]])
+
+            # assign rest of centroids
+
+            # filter through number of centroid assignments (minus 1 that has already been created)
+            for count in range(1, self.K):
+                cluster_dist = []
+
+                # cycle through all data points/possible centroids
+                for point in range(self.data.shape[0]):
+                    # determine closest existing centroid to point with squared sum
+                    data_row = self.data[point]
+                    cluster_dist.append(min(np.sum(np.subtract(data_row, centroids)**2, axis = 1)))
+
+                # calculate normalizing factor
+                dist_cumsum = sum(cluster_dist)
+
+                # initialize cdf
+                cluster_dist_cum_probs = []
+
+                # iterate through data point to centroid minimum distances
+                for cum_count, dist in enumerate(cluster_dist):
+                    # create pdf of distances
+                    prob = dist/dist_cumsum
+                    # initial cdf assigning
+                    if cum_count == 0:
+                        cluster_dist_cum_probs.append(prob)
+                    else:
+                        cluster_dist_cum_probs.append(cluster_dist_cum_probs[-1] + prob)
+
+                # random sample from uniform distribution
+                # we need to stipulate a random point somewhere in the cdf
+
+                init_samp = np.random.uniform()
+
+                # centre selected based on cdf
+                # the sample value will have a higher probability of landing on a
+                # generally far away distance (clustered points in different cluster to centroids)
+                # since these have the biggest weight/area in the cdf
+                for cum_count in range(self.data.shape[0]):
+                    # assign centroid based on where it is situated on cdf
+                    if init_samp < cluster_dist_cum_probs[cum_count]:
+                        cent = cum_count
+                        break
+
+                # add centroid
+                centroids = np.vstack((centroids, self.data[cent]))
+
+            self.initial_values = centroids
+
+        else:
+            raise ValueError("Please specify a valid algorithm to apply.")
+
+        return None
+
+    def cluster_points(self, max_iter=100):
         """
         Perform k-means clustering on the provided data
 
         Requires that kmeans.intialize_centers() has been run in advance
 
         Inputs:
-         - data:    an n x d array of data points to be clustered
-         - centers: a k x d array of centers (means) for intialization
+         - data:     an n x d array of data points to be clustered
+         - centers:  a k x d array of centers (means) for intialization
+         - max_iter: an integer specifying the maximum number of iterations
 
         Output:
          - an n x 1 array of hard cluster assignments
         """
-        if self.data.shape[1] != self.initial_values.shape[1]:
+        # this should be first to avoid Nonetype errors
+        if self.initial_values is None:
+            raise ValueError("Cluster centers have not been initialized")
+
+        # dimension of dataset and number of clusters
+        n, d = self.data.shape
+        k, iv_dim = self.initial_values.shape
+
+        # check that some basic conditions are met
+        if d != iv_dim:
             raise ValueError("Initial values and data are not compatible shape")
 
-        pass
+        # array to hold distance between all points and all centers
+        dist_arr = np.zeros(n*k).reshape(n,k)
+
+        # initial dummy assignment for first iteration
+        last_assign = -np.ones(n)
+        means = self.initial_values
+
+        for iter in range(max_iter):
+
+            # compute distance between each observation and each mean
+            for c in range(k):
+                dist_arr[:,c] = np.linalg.norm(means[c,:] - self.data, axis=1)
+
+            # assign to nearest mean
+            cur_assign = dist_arr.argmin(axis=1)
+
+            # update means based on new assignments
+            for j in range(k):
+                means[j,:] = self.data[cur_assign == j,:].mean(axis=0)
+
+            # termination block: only enter if we have hit local minima
+            if np.array_equal(cur_assign, last_assign):
+                self.cluster_assignments = cur_assign
+                self.cluster_centers = means
+                return None
+
+            # update last iterations assignment for next comparison
+            last_assign = dist_arr.argmin(axis=1)
+
+        return None
+
 
     def plot(self):
         """
