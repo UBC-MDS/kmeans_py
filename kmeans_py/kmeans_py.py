@@ -1,6 +1,9 @@
 """User-friendly k-means clustering package"""
 import numpy as np
 import warnings
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class kmeans():
 
@@ -11,6 +14,8 @@ class kmeans():
         self.initial_values = None
         self.cluster_centers = None
         self.cluster_assignments = None
+        self.cluster_summary = None
+        self.assignment_summary = None
 
 
     def initialize_centers(self, algorithm = 'kmeans++'):
@@ -191,17 +196,43 @@ class kmeans():
         return None
 
 
-    def plot(self):
+    def report(self):
         """
-        Plot the clustered points, colour by cluster assignments
+        reports a summary of cluster assignments
 
         Requires that self.data and self.cluster_assignments are initialized
-        Prints a plot to the screen & saves plot as an image in the root directory.
+        Updates self.cluster_summary attribute to contain cluster summary information            Updates self.assignments_summary attribute to show cluster point pairings
 
-        Output: image file "kmeans_plot.png" in root directory
+        Prints a plot to the screen if data is 2 dimensional
+
+        Output: cluster_summary (pd data frame, printed to screen)
+                assignments_summary (pd data frame)
+                plot (if 2D data)
         """
-        if self.cluster_assignments == None:
+
+        # cluster assignments must be initialized
+        if self.cluster_assignments is None:
             raise ValueError("Cluster assignments must be assigned before plotting")
 
+        # each point must have a cluster assignment
+        if self.data.shape[0] != self.cluster_assignments.shape[0]:
+            raise ValueError("Cluster assignenments and data are different lengths!")
 
-        pass
+
+
+        counts = []
+        for k in range(0, self.K):
+            counts.append(sum(self.cluster_assignments == k))
+
+        self.cluster_summary = pd.DataFrame({'cluster' : list(range(0,self.K)),
+                                             'count' : counts})
+
+        self.assignment_summary = pd.DataFrame(self.data)
+        self.assignment_summary['cluster'] = self.cluster_assignments
+
+        if self.data.shape[1] == 2:
+            self.assignment_summary = self.assignment_summary.rename(index=str,columns={0: "x", 1: "y"})
+            sns.lmplot('x', 'y', data=test_df, hue='cluster', fit_reg=False)
+            plt.title("cluster assignments")
+
+        print(self.cluster_summary)
