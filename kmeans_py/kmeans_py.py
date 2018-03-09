@@ -212,7 +212,7 @@ class kmeans():
 
         counts = []
         for k in range(0, self.K):
-            counts.append(sum(km.cluster_assignments == k))
+            counts.append(sum(self.cluster_assignments == k))
 
         self.cluster_summary = pd.DataFrame({'cluster' : list(range(0,self.K)),
                                              'count' : counts})
