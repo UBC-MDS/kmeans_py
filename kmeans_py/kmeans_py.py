@@ -196,44 +196,43 @@ class kmeans():
         return None
 
 
-        def report(self):
-            """
-            reports a summary of cluster assignments
+    def report(self):
+        """
+        reports a summary of cluster assignments
 
-            Requires that self.data and self.cluster_assignments are initialized
-            Updates self.cluster_summary attribute to contain cluster summary information
-            Updates self.assignments_summary attribute to show cluster point pairings
+        Requires that self.data and self.cluster_assignments are initialized
+        Updates self.cluster_summary attribute to contain cluster summary information            Updates self.assignments_summary attribute to show cluster point pairings
 
-            Prints a plot to the screen if data is 2 dimensional
+        Prints a plot to the screen if data is 2 dimensional
 
-            Output: cluster_summary (pd data frame, printed to screen)
-                    assignments_summary (pd data frame)
-                    plot (if 2D data)
-            """
+        Output: cluster_summary (pd data frame, printed to screen)
+                assignments_summary (pd data frame)
+                plot (if 2D data)
+        """
 
-            # cluster assignments must be initialized
-            if self.cluster_assignments is None:
-                raise ValueError("Cluster assignments must be assigned before plotting")
+        # cluster assignments must be initialized
+        if self.cluster_assignments is None:
+            raise ValueError("Cluster assignments must be assigned before plotting")
 
-            # each point must have a cluster assignment
-            if self.data.shape[0] != self.cluster_assignments.shape[0]:
-                raise ValueError("Cluster assignenments and data are different lengths!")
-
+        # each point must have a cluster assignment
+        if self.data.shape[0] != self.cluster_assignments.shape[0]:
+            raise ValueError("Cluster assignenments and data are different lengths!")
 
 
-            counts = []
-            for k in range(0, self.K):
-                counts.append(sum(self.cluster_assignments == k))
 
-            self.cluster_summary = pd.DataFrame({'cluster' : list(range(0,self.K)),
-                                                 'count' : counts})
+        counts = []
+        for k in range(0, self.K):
+            counts.append(sum(self.cluster_assignments == k))
 
-            self.assignment_summary = pd.DataFrame(self.data)
-            self.assignment_summary['cluster'] = self.cluster_assignments
+        self.cluster_summary = pd.DataFrame({'cluster' : list(range(0,self.K)),
+                                             'count' : counts})
 
-            if self.data.shape[1] == 2:
-                self.assignment_summary = self.assignment_summary.rename(index=str,columns={0: "x", 1: "y"})
-                sns.lmplot('x', 'y', data=test_df, hue='cluster', fit_reg=False)
-                plt.title("cluster assignments")
+        self.assignment_summary = pd.DataFrame(self.data)
+        self.assignment_summary['cluster'] = self.cluster_assignments
 
-            print(self.cluster_summary)
+        if self.data.shape[1] == 2:
+            self.assignment_summary = self.assignment_summary.rename(index=str,columns={0: "x", 1: "y"})
+            sns.lmplot('x', 'y', data=test_df, hue='cluster', fit_reg=False)
+            plt.title("cluster assignments")
+
+        print(self.cluster_summary)
