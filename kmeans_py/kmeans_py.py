@@ -195,7 +195,7 @@ class kmeans():
 
         Prints a plot to the screen if data is 2 dimensional
 
-        Output: cluster_summary (pd data frame)
+        Output: cluster_summary (pd data frame, printed to screen)
                 assignments_summary (pd data frame)
                 plot (if 2D data)
         """
@@ -224,3 +224,5 @@ class kmeans():
             self.assignment_summary = self.assignment_summary.rename(index=str,columns={0: "x", 1: "y"})
             sns.lmplot('x', 'y', data=test_df, hue='cluster', fit_reg=False)
             plt.title("cluster assignments")
+
+        print(self.cluster_summary)
