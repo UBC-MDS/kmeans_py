@@ -12,7 +12,7 @@ The package integrates and simplifies different functions, such as [sklearn's KM
 
 The package includes the following functions:
 
-* `kmeans++(data, K)` Implementation of the [kmeans++](https://en.wikipedia.org/wiki/K-means%2B%2B) initialization algorithm. Returns `K` number of initial centers based on the input `data`.
+* `kmeans++(data, K, algorithm = "kmeans++")` Creating initialization values. By default implements [kmeans++](https://en.wikipedia.org/wiki/K-means%2B%2B) initialization algorithm. Returns `K` number of initial centers based on the input `data`.
 
 * `kmeans(data, centers_init)` Classifies each observation in `data` by performing [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering). The number of clusters is derived from the number of initial centers specified in `centers_init`. Returns an object containing the original data and assigned cluster labels.
 

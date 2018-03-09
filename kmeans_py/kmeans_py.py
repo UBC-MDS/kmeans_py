@@ -24,10 +24,10 @@ class kmeans():
         K: float
             the number of initial values to be chosen. Should correspond to the number of clusters to be chosen.
 
-        algorithm: string (default = 'k-means++')
+        algorithm: string (default = 'kmeans++')
             the initialisation algorithm specified as a string.
 
-            - 'k-means++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
+            - 'kmeans++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
 
         Returns
         -------
@@ -53,14 +53,14 @@ class kmeans():
         if self.data.shape[0] < self.K:
             raise ValueError("Cannot choose more initialize values than data observations.")
 
-        # return empty array if no centroids need to be returned
-        if self.K == 0:
-            self.initial_values = np.array([])
-            return None
-
         # format as Numpy array, if data object is not in this format (e.g. nested list)
         if type(self.data) != np.ndarray:
             self.data = np.array(self.data)
+
+        # return empty array if no centroids need to be returned
+        if self.K == 0:
+            self.initial_values = np.array([[]])
+            return None
 
         # initialize centroids data object
         # centroids = np.array([])
