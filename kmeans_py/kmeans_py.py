@@ -1,6 +1,8 @@
 """User-friendly k-means clustering package"""
 import numpy as np
-import warnings
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class kmeans():
 
@@ -11,6 +13,8 @@ class kmeans():
         self.initial_values = None
         self.cluster_centers = None
         self.cluster_assignments = None
+        self.cluster_summary = None
+        self.assignment_summary = None
 
 
     def initialize_centers(self, algorithm = 'kmeans++'):
@@ -24,10 +28,10 @@ class kmeans():
         K: float
             the number of initial values to be chosen. Should correspond to the number of clusters to be chosen.
 
-        algorithm: string (default = 'kmeans++')
+        algorithm: string (default = 'k-means++')
             the initialisation algorithm specified as a string.
 
-            - 'kmeans++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
+            - 'k-means++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
 
         Returns
         -------
@@ -53,14 +57,14 @@ class kmeans():
         if self.data.shape[0] < self.K:
             raise ValueError("Cannot choose more initialize values than data observations.")
 
+        # return empty array if no centroids need to be returned
+        if self.K == 0:
+            self.initial_values = np.array([])
+            return None
+
         # format as Numpy array, if data object is not in this format (e.g. nested list)
         if type(self.data) != np.ndarray:
             self.data = np.array(self.data)
-
-        # return empty array if no centroids need to be returned
-        if self.K == 0:
-            self.initial_values = np.array([[]])
-            return None
 
         # initialize centroids data object
         # centroids = np.array([])
@@ -139,15 +143,7 @@ class kmeans():
         """
         # this should be first to avoid Nonetype errors
         if self.initial_values is None:
-            raise TypeError("Cluster centers have not been initialized")
-
-        # also check if the data is none
-        if self.data is None:
-            raise TypeError("The data is of type None")
-
-        # make sure there is a provided number of clusters
-        if self.K is None:
-            raise TypeError("Number of clusters is of type None")
+            raise ValueError("Cluster centers have not been initialized")
 
         # dimension of dataset and number of clusters
         n, d = self.data.shape
@@ -155,7 +151,7 @@ class kmeans():
 
         # check that some basic conditions are met
         if d != iv_dim:
-            raise TypeError("Initial values and data are not compatible shape")
+            raise ValueError("Initial values and data are not compatible shape")
 
         # array to hold distance between all points and all centers
         dist_arr = np.zeros(n*k).reshape(n,k)
@@ -186,22 +182,47 @@ class kmeans():
             # update last iterations assignment for next comparison
             last_assign = dist_arr.argmin(axis=1)
 
-        # warn the user that it did not converge
-        warnings.warn("Failed to Converge", RuntimeWarning)
         return None
 
 
-    def plot(self):
+    def report(self):
         """
-        Plot the clustered points, colour by cluster assignments
+        reports a summary of cluster assignments
 
         Requires that self.data and self.cluster_assignments are initialized
-        Prints a plot to the screen & saves plot as an image in the root directory.
+        Updates self.cluster_summary attribute to contain cluster summary information
+        Updates self.assignments_summary attribute to show cluster point pairings
 
-        Output: image file "kmeans_plot.png" in root directory
+        Prints a plot to the screen if data is 2 dimensional
+
+        Output: cluster_summary (pd data frame, printed to screen)
+                assignments_summary (pd data frame)
+                plot (if 2D data)
         """
-        if self.cluster_assignments == None:
+
+        # cluster assignments must be initialized
+        if self.cluster_assignments is None:
             raise ValueError("Cluster assignments must be assigned before plotting")
 
+        # each point must have a cluster assignment
+        if self.data.shape[0] != self.cluster_assignments.shape[0]:
+            raise ValueError("Cluster assignenments and data are different lengths!")
 
-        pass
+
+
+        counts = []
+        for k in range(0, self.K):
+            counts.append(sum(self.cluster_assignments == k))
+
+        self.cluster_summary = pd.DataFrame({'cluster' : list(range(0,self.K)),
+                                             'count' : counts})
+
+        self.assignment_summary = pd.DataFrame(self.data)
+        self.assignment_summary['cluster'] = self.cluster_assignments
+
+        if self.data.shape[1] == 2:
+            self.assignment_summary = self.assignment_summary.rename(index=str,columns={0: "x", 1: "y"})
+            sns.lmplot('x', 'y', data=test_df, hue='cluster', fit_reg=False)
+            plt.title("cluster assignments")
+
+        print(self.cluster_summary)
