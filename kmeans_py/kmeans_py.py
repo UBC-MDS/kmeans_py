@@ -23,10 +23,10 @@ class kmeans():
         K: float
             the number of initial values to be chosen. Should correspond to the number of clusters to be chosen.
 
-        algorithm: string (default = 'k-means++')
+        algorithm: string (default = 'kmeans++')
             the initialisation algorithm specified as a string.
 
-            - 'k-means++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
+            - 'kmeans++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
 
         Returns
         -------
