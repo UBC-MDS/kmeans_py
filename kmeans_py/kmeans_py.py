@@ -1,5 +1,6 @@
 """User-friendly k-means clustering package"""
 import numpy as np
+import warnings
 
 class kmeans():
 
@@ -138,7 +139,15 @@ class kmeans():
         """
         # this should be first to avoid Nonetype errors
         if self.initial_values is None:
-            raise ValueError("Cluster centers have not been initialized")
+            raise TypeError("Cluster centers have not been initialized")
+
+        # also check if the data is none
+        if self.data is None:
+            raise TypeError("The data is of type None")
+
+        # make sure there is a provided number of clusters
+        if self.K is None:
+            raise TypeError("Number of clusters is of type None")
 
         # dimension of dataset and number of clusters
         n, d = self.data.shape
@@ -146,7 +155,7 @@ class kmeans():
 
         # check that some basic conditions are met
         if d != iv_dim:
-            raise ValueError("Initial values and data are not compatible shape")
+            raise TypeError("Initial values and data are not compatible shape")
 
         # array to hold distance between all points and all centers
         dist_arr = np.zeros(n*k).reshape(n,k)
@@ -177,6 +186,8 @@ class kmeans():
             # update last iterations assignment for next comparison
             last_assign = dist_arr.argmin(axis=1)
 
+        # warn the user that it did not converge
+        warnings.warn("Failed to Converge", RuntimeWarning)
         return None
 
 

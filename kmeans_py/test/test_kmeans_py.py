@@ -8,6 +8,7 @@ from kmeans_py import kmeans_py
 from pathlib import Path
 
 import numpy as np
+import warnings
 
 def test_kmeans_init():
     """
@@ -93,7 +94,7 @@ def test_kmeans_cluster():
 
     try:
         bad_model.cluster_points()
-    except(ValueError):
+    except(TypeError):
         assert True
     else:
         assert False
@@ -104,10 +105,43 @@ def test_kmeans_cluster():
 
     try:
         bad_model.cluster_points()
-    except(ValueError):
+    except(TypeError):
         assert True
     else:
         assert False
+
+    # test for correct error when no data was provided
+    no_data_model = kmeans_py.kmeans(data=None, K=bad_cent.shape[0])
+
+    try:
+        no_data_model.cluster_points()
+    except(TypeError):
+        assert True
+    else:
+        assert False
+
+    # test for correct error when no number of clusters is provided
+    no_K_model = kmeans_py.kmeans(data=X, K=None)
+
+    try:
+        no_K_model.cluster_points()
+    except(TypeError):
+        assert True
+    else:
+        assert False
+
+    # test that warning is produced when clustering failed to converge
+    model = kmeans_py.kmeans(data=X, K=cent.shape[0])
+    model.initial_values = cent
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        model.cluster_points(max_iter=0)
+        assert len(w) == 1
+        assert issubclass(w[-1].category, RuntimeWarning)
+        assert "Failed to Converge" in str(w[-1].message)
+
+
 
 
 
