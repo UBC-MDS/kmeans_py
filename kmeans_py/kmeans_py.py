@@ -52,14 +52,14 @@ class kmeans():
         if self.data.shape[0] < self.K:
             raise ValueError("Cannot choose more initialize values than data observations.")
 
-        # return empty array if no centroids need to be returned
-        if self.K == 0:
-            self.initial_values = np.array([])
-            return None
-
         # format as Numpy array, if data object is not in this format (e.g. nested list)
         if type(self.data) != np.ndarray:
             self.data = np.array(self.data)
+
+        # return empty array if no centroids need to be returned
+        if self.K == 0:
+            self.initial_values = np.array([[]])
+            return None
 
         # initialize centroids data object
         # centroids = np.array([])
