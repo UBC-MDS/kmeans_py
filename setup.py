@@ -10,5 +10,5 @@ setup(
     license='LICENSE.md',
     description='Kmeans initialization, clustering, and plotting',
     long_description=open('README.md').read(),
-    install_requires=['numpy', 'warnings', 'pandas', 'matplotlib', 'seaborn']
+    install_requires=['numpy', 'pandas', 'matplotlib', 'seaborn']
 )
