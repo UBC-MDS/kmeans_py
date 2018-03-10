@@ -1,1 +1,1 @@
-from kmeans_py.kmeans_py import kmeans
+from kmeans_py import kmeans
