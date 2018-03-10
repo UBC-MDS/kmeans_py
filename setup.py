@@ -2,17 +2,13 @@ from distutils.core import setup
 
 setup(
     name='kmeans_py',
-    version='1.0',
-    author='J. Random Hacker',
-    author_email='jrh@example.com',
-    packages=['kmeans_py', 'kmeans_py.test'],
-    #scripts=['bin/stowe-towels.py','bin/wash-towels.py'],
-    #url='http://pypi.python.org/pypi/TowelStuff/',
-    license='LICENSE.txt',
-    description='Kmeans clustering',
-    long_description=open('README.txt').read(),
-    #install_requires=[
-    #    "Django >= 1.1.1",
-    #    "caldav == 0.1.4",
-    #],
+    version='2.0',
+    author='Charley Carriero, Johannes Harmse, Bradley Pick',
+    author_email='NA',
+    packages=['kmeans_py'],
+    url='https://github.com/UBC-MDS/kmeans_py',
+    license='LICENSE.md',
+    description='Kmeans initialization, clustering, and plotting',
+    long_description=open('README.md').read(),
+    install_requires=['numpy', 'warnings', 'pandas', 'matplotlib', 'seaborn']
 )
