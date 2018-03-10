@@ -232,7 +232,7 @@ class kmeans():
 
         if self.data.shape[1] == 2:
             self.assignment_summary = self.assignment_summary.rename(index=str,columns={0: "x", 1: "y"})
-            sns.lmplot('x', 'y', data=test_df, hue='cluster', fit_reg=False)
+            sns.lmplot('x', 'y', data=self.assignment_summary, hue='cluster', fit_reg=False)
             plt.title("cluster assignments")
 
         print(self.cluster_summary)
