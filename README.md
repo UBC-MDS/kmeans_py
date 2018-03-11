@@ -19,9 +19,11 @@ Simple example demonstrating the functionality of this package:
 ```
 # imports for data generation
 import kmeans_py
+
 import numpy as np
 from numpy.random import normal
-# % matplotlib inline # if your using jupyter notebooks
+import matplotlib.pyplot as plt
+# % matplotlib inline
 
 # generate synthetic data with three clusters
 x = np.concatenate([normal(1,1,20), normal(6,3,30), normal(10,2,15)])
