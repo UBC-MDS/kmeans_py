@@ -1,5 +1,3 @@
-.cache/*
+.cache/
 
-kmeans_py/__pycache__/*
-
-kmeans_py/test/__pycache__/*
+tests/__pycache__/
