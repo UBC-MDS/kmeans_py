@@ -1,3 +1,5 @@
 .cache/
 
 tests/__pycache__/
+
+kmeans_py/__pycache__/
