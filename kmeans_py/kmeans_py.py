@@ -143,16 +143,16 @@ class kmeans():
          - an n x 1 array of hard cluster assignments
         """
         # this should be first to avoid Nonetype errors
-        if self.initial_values is None:
-            raise TypeError("Cluster centers have not been initialized")
+        if not isinstance(self.initial_values, np.ndarray):
+            raise TypeError("Cluster centers is of incorrect type")
 
         # also check if the data is none
-        if self.data is None:
-            raise TypeError("The data is of type None")
+        if not isinstance(self.data, np.ndarray):
+            raise TypeError("The data is of incorrect type")
 
         # make sure there is a provided number of clusters
-        if self.K is None:
-            raise TypeError("Number of clusters is of type None")
+        if not isinstance(self.K, int):
+            raise TypeError("Number of clusters is of incorrect type")
 
         # dimension of dataset and number of clusters
         n, d = self.data.shape
