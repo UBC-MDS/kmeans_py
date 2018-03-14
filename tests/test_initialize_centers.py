@@ -40,7 +40,11 @@ def test_kmeans_init():
     # generating random data
 
 
-    # test that no data gives error message
+def test_no_data():
+    """
+    Testing correct error handling if no data in given as input.
+    """
+
     try:
         model = kmeans_py.kmeans(K = 5)
         model.initialize_centers(algorithm='kmeans++')
@@ -49,7 +53,14 @@ def test_kmeans_init():
     else:
         assert False
 
-    # test that no K value gives error message
+
+def test_no_K():
+    """
+    Testing correct error handling if no K value is given as input.
+    """
+
+    data = gen_acceptable_data()[0]
+
     try:
         model = kmeans_py.kmeans(data = data)
         model.initialize_centers(algorithm='kmeans++')
@@ -58,7 +69,13 @@ def test_kmeans_init():
     else:
         assert False
 
-    # test that K value with too large value gives error message
+def test_large_K():
+    """
+    Testing correct error handling for K value that is too large
+    """
+
+    data = gen_acceptable_data()[0]
+
     try:
         model = kmeans_py.kmeans(data = data, K = data.shape[0] + 1)
         model.initialize_centers(algorithm='kmeans++')
@@ -67,7 +84,14 @@ def test_kmeans_init():
     else:
         assert False
 
-    # check if valid algorithm has been chosen
+
+def test_invalid_algorithm():
+    """
+    Testing correct error handling for invalid algorithm input.
+    """
+
+    data = gen_acceptable_data()[0]
+
     try:
         model = kmeans_py.kmeans(data=data, K=100)
         model.initialize_centers(algorithm='blah')
@@ -76,35 +100,67 @@ def test_kmeans_init():
     else:
         assert False
 
-    for k in K:
-        model = kmeans_py.kmeans(data = data, K = k)
-        # print(model.data)
-        # print(model.K)
-        model.initialize_centers(algorithm = 'kmeans++')
-        assert model.initial_values is not None  #should return something
-        assert type(model.initial_values) is np.ndarray # should return array
+def test_K_zero():
+    """
+     Testing correct handling of K with 0 value
+    """
 
-        len(np.array([]).shape)
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 0
 
-        # return empty array if no values should be initialized
-        if k == 0:
-            assert model.initial_values.shape[0] == 1 # should return one row
-            assert model.initial_values.shape[1] == 0  # should return zero columns
+    model = kmeans_py.kmeans(data = data, K = k)
+    model.initialize_centers(algorithm = 'kmeans++')
+    assert model.initial_values is not None  #should return something
+    assert type(model.initial_values) is np.ndarray # should return array
 
-        if k > 0:
-            assert np.array_equal(model.initial_values, np.unique(model.initial_values, axis=0)) # check that values are unique
-            print(model.initial_values)
-            assert model.initial_values.shape[0] == k # number of initial values should be the same as K
-            assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
+    # return empty array if no values should be initialized
+    assert model.initial_values.shape[0] == 1 # should return one row
+    assert model.initial_values.shape[1] == 0  # should return zero columns
 
-            if k == 2:
-                # check if initialization values fall within the logical clusters
-                assert np.min(model.initial_values[:, 0]) >= cluster_borders[0, 0]
-                assert np.min(model.initial_values[:, 0]) <= cluster_borders[1, 0]
-                assert np.min(model.initial_values[:, 1]) >= cluster_borders[0, 1]
-                assert np.min(model.initial_values[:, 1]) <= cluster_borders[1, 1]
+def test_logical_output_values():
+    """
+    Test that returned initialization points are unique with valid input.
+    """
 
-                assert np.max(model.initial_values[:, 0]) >= cluster_borders[1, 0]
-                assert np.max(model.initial_values[:, 0]) <= cluster_borders[2, 0]
-                assert np.max(model.initial_values[:, 1]) >= cluster_borders[1, 1]
-                assert np.max(model.initial_values[:, 1]) <= cluster_borders[2, 1]
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(algorithm='kmeans++')
+
+    assert np.array_equal(model.initial_values, np.unique(model.initial_values, axis=0))
+
+def test_output_shape():
+    """
+     Test correct output shape with valid input data
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(algorithm='kmeans++')
+
+    assert model.initial_values.shape[0] == k # number of initial values should be the same as K
+    assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
+
+def test_initialization_values():
+    """
+     Test that algorithm is giving valid outputs.
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(algorithm='kmeans++')
+
+    assert np.min(model.initial_values[:, 0]) >= cluster_borders[0, 0]
+    assert np.min(model.initial_values[:, 0]) <= cluster_borders[1, 0]
+    assert np.min(model.initial_values[:, 1]) >= cluster_borders[0, 1]
+    assert np.min(model.initial_values[:, 1]) <= cluster_borders[1, 1]
+
+    assert np.max(model.initial_values[:, 0]) >= cluster_borders[1, 0]
+    assert np.max(model.initial_values[:, 0]) <= cluster_borders[2, 0]
+    assert np.max(model.initial_values[:, 1]) >= cluster_borders[1, 1]
+    assert np.max(model.initial_values[:, 1]) <= cluster_borders[2, 1]
