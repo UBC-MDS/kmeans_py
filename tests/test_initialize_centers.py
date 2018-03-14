@@ -1,9 +1,34 @@
 import sys
 sys.path.insert(0, '.')
 from kmeans_py import kmeans_py
-
-
 import numpy as np
+
+#######################################
+#####       HELPER FUNCTIONS      #####
+#######################################
+
+def gen_acceptable_data():
+    """Helper to generate acceptable data"""
+
+    np.random.seed(1234)
+    x = np.random.uniform(size=100) + [0, 10] * 50
+    y = np.random.normal(loc=5, scale=1, size=100) + [0, 10] * 50
+    data = np.array([x, y]).transpose()
+    cluster_borders = np.percentile(data, [0, 50, 100], axis=0)
+
+    K = range(0, 3)
+
+    return (data, cluster_borders, K)
+
+def gen_unacceptable_data():
+    """Helper to generate unacceptable data"""
+    X = np.array([[1, 2, 3, 4],[9, 8 , 7, 6],[1.5, 2, 3.5, 4]])
+    c = np.array([[2, 3, 4]])
+    return (X, c)
+
+#########################################
+#############     TESTS     #############
+#########################################
 
 def test_kmeans_init():
     """
@@ -13,13 +38,7 @@ def test_kmeans_init():
     # K = range(0, 3, 1)
 
     # generating random data
-    np.random.seed(1234)
-    x = np.random.uniform(size=100) + [0, 10] * 50
-    y = np.random.normal(loc=5, scale=1, size=100) + [0, 10] * 50
-    data = np.array([x, y]).transpose()
-    cluster_borders = np.percentile(data, [0, 50, 100], axis=0)
 
-    K = range(0, 3)
 
     # test that no data gives error message
     try:
