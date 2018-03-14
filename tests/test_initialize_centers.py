@@ -30,16 +30,6 @@ def gen_unacceptable_data():
 #############     TESTS     #############
 #########################################
 
-def test_kmeans_init():
-    """
-    Testing kmeans initialize_centers method
-    """
-    # data = np.array([[1, 2, 3, 4], [9, 8, 7, 6], [1.5, 2, 3.5, 4]])
-    # K = range(0, 3, 1)
-
-    # generating random data
-
-
 def test_no_data():
     """
     Testing correct error handling if no data in given as input.
