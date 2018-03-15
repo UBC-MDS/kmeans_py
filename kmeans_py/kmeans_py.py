@@ -1,4 +1,5 @@
-"""User-friendly k-means clustering package"""
+#!/usr/bin/env python
+# address point 2
 import numpy as np
 import warnings
 import pandas as pd
@@ -132,15 +133,18 @@ class kmeans():
         """
         Perform k-means clustering on the provided data
 
-        Requires that kmeans.intialize_centers() has been run in advance
-
         Inputs:
-         - data:     an n x d array of data points to be clustered
-         - centers:  a k x d array of centers (means) for intialization
          - max_iter: an integer specifying the maximum number of iterations
 
+        Requires:
+         - self.data:           provided upon initialization of object
+         - self.initial_values: computed by initialize_centers method
+
         Output:
-         - an n x 1 array of hard cluster assignments
+         - None
+         - Called for side effect of updating the cluster_assignments
+           and cluster_centers attributes of the kmeans object on
+           which this method is called
         """
         # this should be first to avoid Nonetype errors
         if not isinstance(self.initial_values, np.ndarray):
@@ -150,8 +154,9 @@ class kmeans():
         if not isinstance(self.data, np.ndarray):
             raise TypeError("The data is of incorrect type")
 
-        # make sure there is a provided number of clusters
-        if not isinstance(self.K, int):
+        # make sure there is an integer number of clusters and it is positive
+        # this addresses point 7 from feedback
+        if not (isinstance(self.K, int) and self.K >= 1):
             raise TypeError("Number of clusters is of incorrect type")
 
         # dimension of dataset and number of clusters
@@ -193,7 +198,8 @@ class kmeans():
 
         # warn the user that it did not converge
         warnings.warn("Failed to Converge", RuntimeWarning)
-        return None
+        # address point 6 in feedback
+        return self
 
 
     def report(self):
