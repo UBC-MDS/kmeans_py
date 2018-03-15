@@ -18,7 +18,7 @@ class kmeans():
         self.assignment_summary = None
 
 
-    def initialize_centers(self, algorithm = 'kmeans++'):
+    def initialize_centers(self, algorithm = 'kmeanspp'):
         """ Choose Initial K-Means Values
 
         Arguments
@@ -29,10 +29,10 @@ class kmeans():
         K: float
             the number of initial values to be chosen. Should correspond to the number of clusters to be chosen.
 
-        algorithm: string (default = 'kmeans++')
+        algorithm: string (default = 'kmeanspp')
             the initialisation algorithm specified as a string.
 
-            - 'kmeans++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
+            - 'kmeanspp': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
 
         Returns
         -------
@@ -71,7 +71,7 @@ class kmeans():
         # centroids = np.array([])
 
         # kmeans++ algorithm
-        if algorithm == "kmeans++":
+        if algorithm == "kmeanspp":
             # use first observation as random first centroid starting point
             centroids = np.array([self.data[0]])
 

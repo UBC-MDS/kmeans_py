@@ -37,7 +37,7 @@ def test_no_data():
 
     try:
         model = kmeans_py.kmeans(K = 5)
-        model.initialize_centers(algorithm='kmeans++')
+        model.initialize_centers(algorithm='kmeanspp')
     except(TypeError):
         assert True
     else:
@@ -53,7 +53,7 @@ def test_no_K():
 
     try:
         model = kmeans_py.kmeans(data = data)
-        model.initialize_centers(algorithm='kmeans++')
+        model.initialize_centers(algorithm='kmeanspp')
     except(TypeError):
         assert True
     else:
@@ -68,7 +68,7 @@ def test_large_K():
 
     try:
         model = kmeans_py.kmeans(data = data, K = data.shape[0] + 1)
-        model.initialize_centers(algorithm='kmeans++')
+        model.initialize_centers(algorithm='kmeanspp')
     except(ValueError):
         assert True
     else:
@@ -99,7 +99,7 @@ def test_K_zero():
     k = 0
 
     model = kmeans_py.kmeans(data = data, K = k)
-    model.initialize_centers(algorithm = 'kmeans++')
+    model.initialize_centers(algorithm = 'kmeanspp')
     assert model.initial_values is not None  #should return something
     assert type(model.initial_values) is np.ndarray # should return array
 
@@ -116,7 +116,7 @@ def test_logical_output_values():
     k = 2
 
     model = kmeans_py.kmeans(data=data, K=k)
-    model.initialize_centers(algorithm='kmeans++')
+    model.initialize_centers(algorithm='kmeanspp')
 
     assert np.array_equal(model.initial_values, np.unique(model.initial_values, axis=0))
 
@@ -129,7 +129,7 @@ def test_output_shape():
     k = 2
 
     model = kmeans_py.kmeans(data=data, K=k)
-    model.initialize_centers(algorithm='kmeans++')
+    model.initialize_centers(algorithm='kmeanspp')
 
     assert model.initial_values.shape[0] == k # number of initial values should be the same as K
     assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
@@ -143,7 +143,7 @@ def test_initialization_values():
     k = 2
 
     model = kmeans_py.kmeans(data=data, K=k)
-    model.initialize_centers(algorithm='kmeans++')
+    model.initialize_centers(algorithm='kmeanspp')
 
     assert np.min(model.initial_values[:, 0]) >= cluster_borders[0, 0]
     assert np.min(model.initial_values[:, 0]) <= cluster_borders[1, 0]
