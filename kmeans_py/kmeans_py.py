@@ -78,50 +78,50 @@ class kmeans():
             centroids = np.array([self.data[0]])
 
             # assign rest of centroids
+            if self.K >= 2:
+                # filter through number of centroid assignments (minus 1 that has already been created)
+                for count in range(1, self.K):
+                    cluster_dist = []
 
-            # filter through number of centroid assignments (minus 1 that has already been created)
-            for count in range(1, self.K):
-                cluster_dist = []
+                    # cycle through all data points/possible centroids
+                    for point in range(self.data.shape[0]):
+                        # determine closest existing centroid to point with squared sum
+                        data_row = self.data[point]
+                        cluster_dist.append(min(np.sum(np.subtract(data_row, centroids)**2, axis = 1)))
 
-                # cycle through all data points/possible centroids
-                for point in range(self.data.shape[0]):
-                    # determine closest existing centroid to point with squared sum
-                    data_row = self.data[point]
-                    cluster_dist.append(min(np.sum(np.subtract(data_row, centroids)**2, axis = 1)))
+                    # calculate normalizing factor
+                    dist_cumsum = sum(cluster_dist)
 
-                # calculate normalizing factor
-                dist_cumsum = sum(cluster_dist)
+                    # initialize cdf
+                    cluster_dist_cum_probs = []
 
-                # initialize cdf
-                cluster_dist_cum_probs = []
+                    # iterate through data point to centroid minimum distances
+                    for cum_count, dist in enumerate(cluster_dist):
+                        # create pdf of distances
+                        prob = dist/dist_cumsum
+                        # initial cdf assigning
+                        if cum_count == 0:
+                            cluster_dist_cum_probs.append(prob)
+                        else:
+                            cluster_dist_cum_probs.append(cluster_dist_cum_probs[-1] + prob)
 
-                # iterate through data point to centroid minimum distances
-                for cum_count, dist in enumerate(cluster_dist):
-                    # create pdf of distances
-                    prob = dist/dist_cumsum
-                    # initial cdf assigning
-                    if cum_count == 0:
-                        cluster_dist_cum_probs.append(prob)
-                    else:
-                        cluster_dist_cum_probs.append(cluster_dist_cum_probs[-1] + prob)
+                    # random sample from uniform distribution
+                    # we need to stipulate a random point somewhere in the cdf
 
-                # random sample from uniform distribution
-                # we need to stipulate a random point somewhere in the cdf
+                    init_samp = np.random.uniform()
 
-                init_samp = np.random.uniform()
+                    # centre selected based on cdf
+                    # the sample value will have a higher probability of landing on a
+                    # generally far away distance (clustered points in different cluster to centroids)
+                    # since these have the biggest weight/area in the cdf
+                    for cum_count in range(self.data.shape[0]):
+                        # assign centroid based on where it is situated on cdf
+                        if init_samp < cluster_dist_cum_probs[cum_count]:
+                            cent = cum_count
+                            break
 
-                # centre selected based on cdf
-                # the sample value will have a higher probability of landing on a
-                # generally far away distance (clustered points in different cluster to centroids)
-                # since these have the biggest weight/area in the cdf
-                for cum_count in range(self.data.shape[0]):
-                    # assign centroid based on where it is situated on cdf
-                    if init_samp < cluster_dist_cum_probs[cum_count]:
-                        cent = cum_count
-                        break
-
-                # add centroid
-                centroids = np.vstack((centroids, self.data[cent]))
+                    # add centroid
+                    centroids = np.vstack((centroids, self.data[cent]))
 
             self.initial_values = centroids
 
