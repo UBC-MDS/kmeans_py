@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
 class kmeans():
 
     def __init__(self, data, K):
@@ -16,7 +17,6 @@ class kmeans():
         self.cluster_assignments = None
         self.cluster_summary = None
         self.assignment_summary = None
-
 
     def initialize_centers(self, algorithm = 'kmeanspp'):
         """ Choose Initial K-Means Values
@@ -195,7 +195,6 @@ class kmeans():
         warnings.warn("Failed to Converge", RuntimeWarning)
         return None
 
-
     def report(self):
         """
         reports a summary of cluster assignments
@@ -217,8 +216,6 @@ class kmeans():
         # each point must have a cluster assignment
         if self.data.shape[0] != self.cluster_assignments.shape[0]:
             raise ValueError("Cluster assignenments and data are different lengths!")
-
-
 
         counts = []
         for k in range(0, self.K):
