@@ -2,6 +2,8 @@
 
 # kmeans_py
 
+[![Build Status](https://travis-ci.org/UBC-MDS/kmeans_py.svg?branch=master)](https://travis-ci.org/UBC-MDS/kmeans_py)
+
 [![GitHub issues](https://img.shields.io/github/issues/UBC-MDS/kmeans_py.svg)](https://github.com/UBC-MDS/kmeans_py/issues)
 
 ## Installation
