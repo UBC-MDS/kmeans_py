@@ -18,7 +18,7 @@ class kmeans():
         self.cluster_summary = None
         self.assignment_summary = None
 
-    def initialize_centers(self, algorithm = 'kmeanspp'):
+    def initialize_centers(self, method='kmeanspp', seed=None):
         """ Choose Initial K-Means Values
 
         Arguments
@@ -29,10 +29,14 @@ class kmeans():
         K: float
             the number of initial values to be chosen. Should correspond to the number of clusters to be chosen.
 
-        algorithm: string (default = 'kmeanspp')
-            the initialisation algorithm specified as a string.
+        method: string (default = 'kmeanspp')
+            the initialisation method specified as a string.
 
             - 'kmeanspp': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
+            - 'rp': Random point initialization method. Less reliable, but faster than 'kmeanspp' method.
+
+        seed: integer
+            the seed to be set if "rp" is specified as method. If None, no seed will be set.
 
         Returns
         -------
@@ -69,7 +73,7 @@ class kmeans():
         # centroids = np.array([])
 
         # kmeans++ algorithm
-        if algorithm == "kmeanspp":
+        if method == "kmeanspp":
             # use first observation as random first centroid starting point
             centroids = np.array([self.data[0]])
 
@@ -120,6 +124,20 @@ class kmeans():
                 centroids = np.vstack((centroids, self.data[cent]))
 
             self.initial_values = centroids
+
+        # random points method
+        elif method == "rp":
+            # set seed if specified
+            if seed is not None:
+                if seed%1 == 0:
+                    np.random.seed(seed)
+                else:
+                    raise ValueError("Invalid seed has been provided. Please specify seed as integer or omit.")
+
+            # select random rows as initialization values
+            cent = np.random.randint(0, self.data.shape[0], size=self.K)
+
+            self.initial_values = self.data[cent]
 
         else:
             raise ValueError("Please specify a valid algorithm to apply.")
