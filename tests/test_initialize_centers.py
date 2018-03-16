@@ -7,6 +7,7 @@ import numpy as np
 #####       HELPER FUNCTIONS      #####
 #######################################
 
+
 def gen_acceptable_data():
     """Helper to generate acceptable data"""
 
@@ -20,6 +21,7 @@ def gen_acceptable_data():
 
     return (data, cluster_borders, K)
 
+
 def gen_unacceptable_data():
     """Helper to generate unacceptable data"""
     X = np.array([[1, 2, 3, 4],[9, 8 , 7, 6],[1.5, 2, 3.5, 4]])
@@ -29,6 +31,7 @@ def gen_unacceptable_data():
 #########################################
 #############     TESTS     #############
 #########################################
+
 
 def test_no_data():
     """
@@ -58,6 +61,7 @@ def test_no_K():
         assert True
     else:
         assert False
+
 
 def test_large_K():
     """
@@ -90,6 +94,7 @@ def test_invalid_algorithm():
     else:
         assert False
 
+
 def test_K_zero():
     """
      Testing correct handling of K with 0 value
@@ -107,6 +112,7 @@ def test_K_zero():
     assert model.initial_values.shape[0] == 1 # should return one row
     assert model.initial_values.shape[1] == 0  # should return zero columns
 
+
 def test_logical_output_values():
     """
     Test that returned initialization points are unique with valid input.
@@ -119,6 +125,7 @@ def test_logical_output_values():
     model.initialize_centers(algorithm='kmeanspp')
 
     assert np.array_equal(model.initial_values, np.unique(model.initial_values, axis=0))
+
 
 def test_output_shape():
     """
@@ -133,6 +140,7 @@ def test_output_shape():
 
     assert model.initial_values.shape[0] == k # number of initial values should be the same as K
     assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
+
 
 def test_initialization_values():
     """
