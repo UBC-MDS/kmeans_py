@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
 class kmeans():
 
     def __init__(self, data, K):
@@ -18,8 +19,7 @@ class kmeans():
         self.cluster_summary = None
         self.assignment_summary = None
 
-
-    def initialize_centers(self, algorithm = 'kmeans++'):
+    def initialize_centers(self, algorithm = 'kmeanspp'):
         """ Choose Initial K-Means Values
 
         Arguments
@@ -30,10 +30,10 @@ class kmeans():
         K: float
             the number of initial values to be chosen. Should correspond to the number of clusters to be chosen.
 
-        algorithm: string (default = 'kmeans++')
+        algorithm: string (default = 'kmeanspp')
             the initialisation algorithm specified as a string.
 
-            - 'kmeans++': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
+            - 'kmeanspp': K-means++ optimization algorithm. Safer, but more time complex, initialization algorithm compared to Lloyd's algorithm.
 
         Returns
         -------
@@ -72,7 +72,7 @@ class kmeans():
         # centroids = np.array([])
 
         # kmeans++ algorithm
-        if algorithm == "kmeans++":
+        if algorithm == "kmeanspp":
             # use first observation as random first centroid starting point
             centroids = np.array([self.data[0]])
 
@@ -201,7 +201,6 @@ class kmeans():
         # address point 6 in feedback
         return self
 
-
     def report(self):
         """
         reports a summary of cluster assignments
@@ -223,8 +222,6 @@ class kmeans():
         # each point must have a cluster assignment
         if self.data.shape[0] != self.cluster_assignments.shape[0]:
             raise ValueError("Cluster assignenments and data are different lengths!")
-
-
 
         counts = []
         for k in range(0, self.K):
