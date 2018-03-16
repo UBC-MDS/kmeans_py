@@ -1,4 +1,4 @@
-<img src="docs/images/logo_py_crop.png" align="right" border = "10" width="350" height="350"/>
+<img src="docs/images/logo_py_crop.png" align="right" border = "10" width="300" height="300"/>
 
 # kmeans_py
 
