@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 sys.path.insert(0, '.')
 import numpy as np
@@ -51,7 +53,7 @@ def test_cluster_and_report_integration():
     model.report()
     assert model.cluster_summary.shape[0] == k
     assert model.assignment_summary.shape == (data.shape[0], data.shape[1] + 1)
-    
+
 
 def test_report_type_integration():
     """
