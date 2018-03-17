@@ -42,7 +42,7 @@ def test_no_data():
 
     try:
         model = kmeans_py.kmeans(K = 5)
-        model.initialize_centers(algorithm='kmeanspp')
+        model.initialize_centers(method='kmeanspp')
     except(TypeError):
         assert True
     else:
@@ -58,7 +58,7 @@ def test_no_K():
 
     try:
         model = kmeans_py.kmeans(data = data)
-        model.initialize_centers(algorithm='kmeanspp')
+        model.initialize_centers(method='kmeanspp')
     except(TypeError):
         assert True
     else:
@@ -74,7 +74,7 @@ def test_large_K():
 
     try:
         model = kmeans_py.kmeans(data = data, K = data.shape[0] + 1)
-        model.initialize_centers(algorithm='kmeanspp')
+        model.initialize_centers(method='kmeanspp')
     except(ValueError):
         assert True
     else:
@@ -90,7 +90,7 @@ def test_invalid_algorithm():
 
     try:
         model = kmeans_py.kmeans(data=data, K=100)
-        model.initialize_centers(algorithm='blah')
+        model.initialize_centers(method='blah')
     except(ValueError):
         assert True
     else:
@@ -99,20 +99,35 @@ def test_invalid_algorithm():
 
 def test_K_zero():
     """
-     Testing correct handling of K with 0 value
+     Testing correct error handling of K with 0 value
     """
 
     data, cluster_borders, _ = gen_acceptable_data()
     k = 0
 
-    model = kmeans_py.kmeans(data = data, K = k)
-    model.initialize_centers(algorithm = 'kmeanspp')
-    assert model.initial_values is not None  #should return something
-    assert type(model.initial_values) is np.ndarray # should return array
+    try:
+        model = kmeans_py.kmeans(data=data, K=k)
+        model.initialize_centers(method='kmeanspp')
+    except(ValueError):
+        assert True
+    else:
+        assert False
 
-    # return empty array if no values should be initialized
-    assert model.initial_values.shape[0] == 1 # should return one row
-    assert model.initial_values.shape[1] == 0  # should return zero columns
+
+def test_K_one():
+    """
+     Test correct output shape with edge case K = 1 input
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 1
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(method='kmeanspp')
+
+    assert model.initial_values.shape[0] == k # number of initial values should be the same as K
+    assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
+
 
 
 def test_logical_output_values():
@@ -124,7 +139,7 @@ def test_logical_output_values():
     k = 2
 
     model = kmeans_py.kmeans(data=data, K=k)
-    model.initialize_centers(algorithm='kmeanspp')
+    model.initialize_centers(method='kmeanspp')
 
     assert np.array_equal(model.initial_values, np.unique(model.initial_values, axis=0))
 
@@ -138,7 +153,7 @@ def test_output_shape():
     k = 2
 
     model = kmeans_py.kmeans(data=data, K=k)
-    model.initialize_centers(algorithm='kmeanspp')
+    model.initialize_centers(method='kmeanspp')
 
     assert model.initial_values.shape[0] == k # number of initial values should be the same as K
     assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
@@ -153,7 +168,7 @@ def test_initialization_values():
     k = 2
 
     model = kmeans_py.kmeans(data=data, K=k)
-    model.initialize_centers(algorithm='kmeanspp')
+    model.initialize_centers(method='kmeanspp')
 
     assert np.min(model.initial_values[:, 0]) >= cluster_borders[0, 0]
     assert np.min(model.initial_values[:, 0]) <= cluster_borders[1, 0]
@@ -164,3 +179,56 @@ def test_initialization_values():
     assert np.max(model.initial_values[:, 0]) <= cluster_borders[2, 0]
     assert np.max(model.initial_values[:, 1]) >= cluster_borders[1, 1]
     assert np.max(model.initial_values[:, 1]) <= cluster_borders[2, 1]
+
+
+def test_invalid_seed():
+    """
+     Test correct error handling if invalid seed is provided
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+
+
+    try:
+        model = kmeans_py.kmeans(data=data, K=k)
+        model.initialize_centers(method='rp', seed=12.12)
+    except(ValueError):
+        assert True
+    else:
+        assert False
+
+
+def test_same_seed():
+    """
+     Test same output for random points method with same seed
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(method='rp', seed=1234)
+
+    model2 = kmeans_py.kmeans(data=data, K=k)
+    model2.initialize_centers(method='rp', seed=1234)
+
+    assert np.array_equal(model.initial_values, model2.initial_values)
+
+
+def test_diff_seed():
+    """
+     Test different output for random points method with different seed
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(method='rp', seed=1234)
+
+    model2 = kmeans_py.kmeans(data=data, K=k)
+    model2.initialize_centers(method='rp', seed=2)
+
+    assert np.array_equal(model.initial_values, model2.initial_values) is False

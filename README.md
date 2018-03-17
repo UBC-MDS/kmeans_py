@@ -48,7 +48,7 @@ at using `pandas` or `matplotlib`).
 
 The package includes the `kmeans` class that has the following methods:
 
-* `initialize_centers(algorithm="kmeanspp")` Creating initialization values. By default implements [kmeans++](https://en.wikipedia.org/wiki/K-means%2B%2B) initialization algorithm. Called for its side effects (returns `None`) of updating the `initial_values` of the `kmeans` object.
+* `initialize_centers(method="kmeanspp")` Creating initialization values. By default implements [kmeans++](https://en.wikipedia.org/wiki/K-means%2B%2B) initialization algorithm. Random points method can be called with `method = "rp"` (with optional seed assignment argument `seed`) which is faster, but less reliable than `kmeanspp`. Called for its side effects (returns `None`) of updating the `initial_values` of the `kmeans` object.
 
 * `cluster_points(max_iter=100)` Classifies each observation in `data` by performing [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering). The number of clusters is derived from the number of initial centers determined by the `initialize_centers` methods. Called for its side effects (returns `None`) of updating the `cluster_assignments` and `cluster_centers` of the `kmeans` object.
 
