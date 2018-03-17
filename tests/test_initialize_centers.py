@@ -97,7 +97,7 @@ def test_invalid_algorithm():
 
 def test_K_zero():
     """
-     Testing correct handling of K with 0 value
+     Testing correct error handling of K with 0 value
     """
 
     data, cluster_borders, _ = gen_acceptable_data()
@@ -110,6 +110,21 @@ def test_K_zero():
         assert True
     else:
         assert False
+
+
+def test_K_one():
+    """
+     Test correct output shape with valid K = 1 input
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 1
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(method='kmeanspp')
+
+    assert model.initial_values.shape[0] == k # number of initial values should be the same as K
+    assert model.initial_values.shape[1] == model.data.shape[1] # dimensions should match
 
 
 
