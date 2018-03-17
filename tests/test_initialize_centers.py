@@ -114,7 +114,7 @@ def test_K_zero():
 
 def test_K_one():
     """
-     Test correct output shape with valid K = 1 input
+     Test correct output shape with edge case K = 1 input
     """
 
     data, cluster_borders, _ = gen_acceptable_data()
@@ -177,3 +177,56 @@ def test_initialization_values():
     assert np.max(model.initial_values[:, 0]) <= cluster_borders[2, 0]
     assert np.max(model.initial_values[:, 1]) >= cluster_borders[1, 1]
     assert np.max(model.initial_values[:, 1]) <= cluster_borders[2, 1]
+
+
+def test_invalid_seed():
+    """
+     Test correct error handling if invalid seed is provided
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+
+
+    try:
+        model = kmeans_py.kmeans(data=data, K=k)
+        model.initialize_centers(method='rp', seed=12.12)
+    except(ValueError):
+        assert True
+    else:
+        assert False
+
+
+def test_same_seed():
+    """
+     Test same output for random points method with same seed
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(method='rp', seed=1234)
+
+    model2 = kmeans_py.kmeans(data=data, K=k)
+    model2.initialize_centers(method='rp', seed=1234)
+
+    assert np.array_equal(model.initial_values, model2.initial_values)
+
+
+def test_diff_seed():
+    """
+     Test different output for random points method with different seed
+    """
+
+    data, cluster_borders, _ = gen_acceptable_data()
+    k = 2
+
+    model = kmeans_py.kmeans(data=data, K=k)
+    model.initialize_centers(method='rp', seed=1234)
+
+    model2 = kmeans_py.kmeans(data=data, K=k)
+    model2.initialize_centers(method='rp', seed=2)
+
+    assert np.array_equal(model.initial_values, model2.initial_values) is False
