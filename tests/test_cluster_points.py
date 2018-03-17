@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+
 import sys
 sys.path.insert(0, '.')
 import numpy as np
 import warnings
+import pytest
 
 from kmeans_py import kmeans_py
 
@@ -14,6 +17,7 @@ def gen_acceptable_data():
     X = np.array([[1, 2, 3, 4],[9, 8 , 7, 6],[1.5, 2, 3.5, 4]])
     c = np.array([[2, 3, 4, 4],[10, 9, 10, 8]])
     return (X, c)
+
 
 def gen_unacceptable_data():
     """Helper to generate unacceptable data"""
@@ -33,12 +37,9 @@ def test_initial_values_type():
     c = None
     model = kmeans_py.kmeans(data=data, K=2)
     model.initial_values = c
-    try:
+    with pytest.raises(TypeError):
         model.cluster_points()
-    except(TypeError):
-        assert True
-    else:
-        assert False
+
 
 def test_data_type():
     """
@@ -48,12 +49,9 @@ def test_data_type():
     data = None
     model = kmeans_py.kmeans(data=data, K=2)
     model.initial_values = c
-    try:
+    with pytest.raises(TypeError):
         model.cluster_points()
-    except(TypeError):
-        assert True
-    else:
-        assert False
+
 
 def test_cluster_num_type():
     """
@@ -62,12 +60,9 @@ def test_cluster_num_type():
     data, c = gen_acceptable_data()
     model = kmeans_py.kmeans(data=data, K=None)
     model.initial_values = c
-    try:
+    with pytest.raises(TypeError):
         model.cluster_points()
-    except(TypeError):
-        assert True
-    else:
-        assert False
+
 
 def test_data_and_initial_values_compatible_shape():
     """
@@ -77,12 +72,9 @@ def test_data_and_initial_values_compatible_shape():
     data, c = gen_unacceptable_data()
     model = kmeans_py.kmeans(data=data, K=2)
     model.initial_values = c
-    try:
+    with pytest.raises(TypeError):
         model.cluster_points()
-    except(TypeError):
-        assert True
-    else:
-        assert False
+
 
 def test_cluster_assignment_shape():
     """
@@ -95,6 +87,7 @@ def test_cluster_assignment_shape():
     assert len(model.cluster_assignments) == data.shape[0]
     assert len(np.unique(model.cluster_assignments)) <= c.shape[0]
 
+
 def test_toy_example_results():
     """
     Tests that the algorithm correctly clusters toy example
@@ -104,6 +97,7 @@ def test_toy_example_results():
     model.initial_values = c
     model.cluster_points()
     assert np.array_equal(model.cluster_assignments, np.array([0,1,0]))
+
 
 def test_failed_to_converge_warning():
     """

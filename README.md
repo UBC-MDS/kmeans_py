@@ -1,9 +1,8 @@
-<img src="docs/images/logo_py_crop.png" align="right" border = "10" />
+<img src="docs/images/logo_py_crop.png" align="right" border = "10" width="300" height="300"/>
 
 # kmeans_py
 
 [![Build Status](https://travis-ci.org/UBC-MDS/kmeans_py.svg?branch=master)](https://travis-ci.org/UBC-MDS/kmeans_py)
-
 [![GitHub issues](https://img.shields.io/github/issues/UBC-MDS/kmeans_py.svg)](https://github.com/UBC-MDS/kmeans_py/issues)
 
 ## Installation
@@ -43,7 +42,9 @@ m.report()
 
 **kmeans_py** is an Python package aimed towards a user-friendly way of exploring and implementing k-means clustering.
 
-The package integrates and simplifies different functions, such as [sklearn's KMeans](http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html) and [scipy's kmeans](https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.cluster.vq.kmeans.html), into one easy-to-use package.
+The package integrates and simplifies different functions, such as [sklearn's KMeans](http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html) and [scipy's kmeans](https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.cluster.vq.kmeans.html), into one easy-to-use package. It allows users to simply hand (tidy) data to the methods
+and receive pleseantly reported summary tables and plots (without having to be adept
+at using `pandas` or `matplotlib`).
 
 The package includes the `kmeans` class that has the following methods:
 

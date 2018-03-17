@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# address point 2
+
 import numpy as np
 import warnings
 import pandas as pd
@@ -198,8 +198,7 @@ class kmeans():
 
         # warn the user that it did not converge
         warnings.warn("Failed to Converge", RuntimeWarning)
-        # address point 6 in feedback
-        return self
+        return None
 
     def report(self):
         """
