@@ -103,14 +103,14 @@ def test_K_zero():
     data, cluster_borders, _ = gen_acceptable_data()
     k = 0
 
-    model = kmeans_py.kmeans(data = data, K = k)
-    model.initialize_centers(method='kmeanspp')
-    assert model.initial_values is not None  #should return something
-    assert type(model.initial_values) is np.ndarray # should return array
+    try:
+        model = kmeans_py.kmeans(data=data, K=k)
+        model.initialize_centers(method='kmeanspp')
+    except(ValueError):
+        assert True
+    else:
+        assert False
 
-    # return empty array if no values should be initialized
-    assert model.initial_values.shape[0] == 1 # should return one row
-    assert model.initial_values.shape[1] == 0  # should return zero columns
 
 
 def test_logical_output_values():
